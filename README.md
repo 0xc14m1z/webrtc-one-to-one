@@ -60,3 +60,36 @@ token-like thing is automatically released at the connection.
 
     - session descriptors and ice candidates must be exchanged so that the
     actual audio/video transmission can start
+
+
+## Protocol
+
+```
+
+CALLER                           SIGNALING                          RECIPIENT
+
+CONNECT ----------------------->
+{ as }
+
+REQUEST_CALL ------------------> CALL_REQUESTED ------------------>
+{ to }                           { from }
+
+       <------------------------ CALL_ACCEPTED <------------------- ACCEPT_CALL
+                                 { by }                             { from }
+
+       <------------------------ CALL_REJECTED <------------------- REJECT_CALL
+                                 { by }                             { from }
+
+SEND_CALLER_DESCRIPTOR --------> CALLER_DESCRIPTOR_RECEIVED ------>
+{ to, sdp }                      { from, sdp }
+
+       <------------------------ RECIPIENT_DESCRIPTOR_RECEIVED <--- SEND_RECIPIENT_DESCRIPTOR
+                                 { from, sdp }                      { to, sdp }
+
+SEND_ICE_CANDIDATE ------------> ICE_CANDIDATE_RECEIVED ---------->
+{ to, candidate }                { from, candidate }
+
+       <------------------------ ICE_CANDIDATE_RECEIVED <----------- SEND_ICE_CANDIDATE
+                                 { from, candidate }                 { to, candidate }
+
+```
