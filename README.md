@@ -66,30 +66,44 @@ token-like thing is automatically released at the connection.
 
 ```
 
-CALLER                           SIGNALING                          RECIPIENT
+CALLER                           SIGNALING SERVER                        RECIPIENT
+--------------------------------------------------------------------------------------------------
 
 CONNECT ----------------------->
 { as }
 
-REQUEST_CALL ------------------> CALL_REQUESTED ------------------>
+REQUEST_CALL ------------------> CALL_REQUESTED ----------------------->
 { to }                           { from }
 
-       <------------------------ CALL_ACCEPTED <------------------- ACCEPT_CALL
-                                 { by }                             { from }
+       <------------------------ CALL_ACCEPTED <------------------------ ACCEPT_CALL
+                                 { by }                                  { from }
 
-       <------------------------ CALL_REJECTED <------------------- REJECT_CALL
-                                 { by }                             { from }
+       <------------------------ CALL_REJECTED <------------------------ REJECT_CALL
+                                 { by }                                  { from }
 
-SEND_CALLER_DESCRIPTOR --------> CALLER_DESCRIPTOR_RECEIVED ------>
+SEND_CALLER_DESCRIPTOR --------> CALLER_DESCRIPTOR_RECEIVED ----------->
 { to, sdp }                      { from, sdp }
 
-       <------------------------ RECIPIENT_DESCRIPTOR_RECEIVED <--- SEND_RECIPIENT_DESCRIPTOR
-                                 { from, sdp }                      { to, sdp }
+       <------------------------ RECIPIENT_DESCRIPTOR_RECEIVED <-------- SEND_RECIPIENT_DESCRIPTOR
+                                 { from, sdp }                           { to, sdp }
 
-SEND_ICE_CANDIDATE ------------> ICE_CANDIDATE_RECEIVED ---------->
+SEND_ICE_CANDIDATE ------------> ICE_CANDIDATE_RECEIVED --------------->
 { to, candidate }                { from, candidate }
 
-       <------------------------ ICE_CANDIDATE_RECEIVED <----------- SEND_ICE_CANDIDATE
-                                 { from, candidate }                 { to, candidate }
+       <------------------------ ICE_CANDIDATE_RECEIVED <--------------- SEND_ICE_CANDIDATE
+                                 { from, candidate }                     { to, candidate }
 
 ```
+
+## Layers
+
+### Signal
+
+An object that handles webrtc-agnostic json-encoded comunications with the 
+signaling server. It should be just able to connect to the server, handle 
+failures and messages exchange.
+
+### Client
+
+This object shall use the Signal one to handle the protocol messages exchange.
+It shall take care of the RTC* stuff as well.
