@@ -9,6 +9,7 @@
   "author": "Luca Ramundo <0xc14m1z@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "nodemon": "^1.19.1",
     "parcel-bundler": "^1.12.3",
     "sass": "^1.22.3"
   },
