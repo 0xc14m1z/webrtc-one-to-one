@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "start:server": "nodemon src/server/index.js"
   },
   "author": "Luca Ramundo <0xc14m1z@gmail.com>",
   "license": "ISC",
