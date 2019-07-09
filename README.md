@@ -72,8 +72,14 @@ CALLER                           SIGNALING SERVER                        RECIPIE
 CONNECT ----------------------->
 { as }
 
+       <------------------------ USERNAME_TAKEN
+
+       <------------------------ CONNECTED
+
 REQUEST_CALL ------------------> CALL_REQUESTED ----------------------->
 { to }                           { from }
+
+       <------------------------ UNKNOWN_RECIPIENT
 
        <------------------------ CALL_ACCEPTED <------------------------ ACCEPT_CALL
                                  { by }                                  { from }
