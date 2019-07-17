@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "start:server": "nodemon src/server/index.js",
-    "test": "mocha --recursive src/**/__tests__/*.js"
+    "test": "mocha --recursive 'src/**/__tests__/*.js'"
   },
   "author": "Luca Ramundo <0xc14m1z@gmail.com>",
   "license": "ISC",
