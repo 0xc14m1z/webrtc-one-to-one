@@ -7,4 +7,11 @@ Signal.prototype.on = function on(event, handler) {
   this.eventHandlers[event].push(handler)
 }
 
+Signal.prototype.emit = function emit(event, ...payload) {
+  const handlers = this.eventHandlers[event] || []
+  handlers.forEach(function run(handler) {
+    if ( typeof handler === 'function' ) handler.call(this, ...payload)
+  })
+}
+
 module.exports = Signal
