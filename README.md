@@ -3,8 +3,8 @@
 ## Workflow
 
 - When the application starts, it shall presents a screen that allows the user
-to pick a username and connect to the signaling server with it. The case where 
-that username has already been picked must be handled; Alternatively, a 
+to pick a username and connect to the signaling server with it. The case where
+that username has already been picked must be handled; Alternatively, a
 token-like thing is automatically released at the connection.
 
   - If the connection fails for some reason, a proper message must be shown.
@@ -14,8 +14,8 @@ token-like thing is automatically released at the connection.
 
     - The connection get closed by the server, so the user should be notified
     and pushed back to the entry point with a proper error message.
-  
-    - The user shall be presented with a screen where someone else's username 
+
+    - The user shall be presented with a screen where someone else's username
     (or token) can be typed and a call request sent.
 
       - After a call request is sent, the user shall see an answer-waiting state
@@ -25,7 +25,7 @@ token-like thing is automatically released at the connection.
 
 - When a call request is sent, the user shall see an answer-waiting state where:
 
-  - the recipient can respond negatively, so an information message shall be 
+  - the recipient can respond negatively, so an information message shall be
   shown to the user and the call request canceled
 
   - a positive answer can come back:
@@ -105,11 +105,10 @@ SEND_ICE_CANDIDATE ------------> ICE_CANDIDATE_RECEIVED --------------->
 
 ### Signal
 
-An object that handles webrtc-agnostic json-encoded comunications with the 
-signaling server. It should be just able to connect to the server, handle 
-failures and messages exchange.
+An object that provides a nice interface for handling the above protocol with
+json-encoded comunications with the signaling server.
 
 ### Client
 
-This object shall use the Signal one to handle the protocol messages exchange.
-It shall take care of the RTC* stuff as well.
+This object shall use the Signal one to handle the protocol messages exchange
+taking care of the RTC* stuff. This object is the interface to the application.
