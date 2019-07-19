@@ -65,4 +65,32 @@ Signal.prototype.send = function send(rawMessage) {
     this.socket.send(rawMessage)
 }
 
+Signal.prototype.connectAs = function connectAs(username) {
+  this.send(Messages.connectAs(username))
+}
+
+Signal.prototype.requestCall = function requestCall(to) {
+  this.send(Messages.requestCall(to))
+}
+
+Signal.prototype.acceptCall = function acceptCall(from) {
+  this.send(Messages.acceptCall(from))
+}
+
+Signal.prototype.rejectCall = function rejectCall(from) {
+  this.send(Messages.rejectCall(from))
+}
+
+Signal.prototype.sendCallerDescriptor = function sendCallerDescriptor(to, sdp) {
+  this.send(Messages.sendCallerDescriptor(to, sdp))
+}
+
+Signal.prototype.sendRecipientDescriptor = function sendRecipientDescriptor(to, sdp) {
+  this.send(Messages.sendRecipientDescriptor(to, sdp))
+}
+
+Signal.prototype.sendICECandidate = function sendICECandidate(to, candidate) {
+  this.send(Messages.sendICECandidate(to, candidate))
+}
+
 module.exports = Signal
