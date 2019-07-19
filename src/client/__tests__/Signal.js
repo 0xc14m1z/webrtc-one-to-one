@@ -154,4 +154,28 @@ describe('Signal', () => {
 
   })
 
+  describe('send', () => {
+
+    const signalingUrl = 'ws://signaling:12345'
+    let server
+
+    before(() => {
+      server = new Server(signalingUrl)
+    })
+
+    after(() => {
+      server.stop()
+    })
+
+    it('doesn\'t send a message if the connection is closed', () => {
+      const messageHandler = sinon.spy()
+
+      server.on('connection', client => client.on('message', messageHandler))
+      signal.send('raw message')
+
+      expect(messageHandler).to.not.have.been.called
+    })
+
+  })
+
 })

@@ -1,4 +1,5 @@
 const decodeMessage = require('../common/decodeMessage')
+const Messages = require('../common/messages')
 
 const Socket = {
   OPEN: 'open',
@@ -57,6 +58,11 @@ Signal.prototype.openConnection = function openConnection(url) {
   this.socket.addEventListener(Socket.CLOSE, onClose.bind(this))
   this.socket.addEventListener(Socket.ERROR, onError.bind(this))
   this.socket.addEventListener(Socket.MESSAGE, onMessage.bind(this))
+}
+
+Signal.prototype.send = function send(rawMessage) {
+  if ( this.socket && this.socket.readyState === WebSocket.OPEN )
+    this.socket.send(rawMessage)
 }
 
 module.exports = Signal
