@@ -22,14 +22,14 @@ describe('Signal', () => {
 
     it('adds given handler to the event handlers array', () => {
       signal.on('event', () => {})
-      expect(signal.eventHandlers['event']).to.be.an('array')
-      expect(signal.eventHandlers['event']).to.have.lengthOf(1)
+      expect(signal.handlers['event']).to.be.an('array')
+      expect(signal.handlers['event']).to.have.lengthOf(1)
     })
 
     it('append the given handler to the list for the given event', () => {
       signal.on('event', () => {})
       signal.on('event', () => {})
-      expect(signal.eventHandlers['event']).to.have.lengthOf(2)
+      expect(signal.handlers['event']).to.have.lengthOf(2)
     })
 
   })

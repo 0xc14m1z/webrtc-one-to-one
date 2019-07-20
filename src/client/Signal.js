@@ -1,3 +1,5 @@
+const EventsEmitter = require('./EventsEmitter')
+
 const decodeMessage = require('../common/decodeMessage')
 const Messages = require('../common/messages')
 
@@ -9,26 +11,16 @@ const Socket = {
 }
 
 function Signal() {
+  EventsEmitter.call(this)
   this.socket = null
   this.isConnected = false
-  this.eventHandlers = {}
 }
 
 Signal.OPEN = 'OPEN'
 Signal.CLOSE = 'CLOSE'
 Signal.ERROR = 'ERROR'
 
-Signal.prototype.on = function on(event, handler) {
-  if ( !this.eventHandlers[event] ) this.eventHandlers[event] = []
-  this.eventHandlers[event].push(handler)
-}
-
-Signal.prototype.emit = function emit(event, ...payload) {
-  const handlers = this.eventHandlers[event] || []
-  handlers.forEach(function run(handler) {
-    if ( typeof handler === 'function' ) handler.call(this, ...payload)
-  })
-}
+Signal.prototype = Object.create(EventsEmitter.prototype)
 
 Signal.prototype.openConnection = function openConnection(url) {
   this.socket = new WebSocket(url)
