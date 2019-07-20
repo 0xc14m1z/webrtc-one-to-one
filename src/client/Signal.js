@@ -52,37 +52,37 @@ Signal.prototype.openConnection = function openConnection(url) {
   this.socket.addEventListener(Socket.MESSAGE, onMessage.bind(this))
 }
 
-Signal.prototype.send = function send(rawMessage) {
+function send(rawMessage) {
   if ( this.socket && this.socket.readyState === WebSocket.OPEN )
     this.socket.send(rawMessage)
 }
 
 Signal.prototype.connectAs = function connectAs(username) {
-  this.send(Messages.connectAs(username))
+  send.call(this, Messages.connectAs(username))
 }
 
 Signal.prototype.requestCall = function requestCall(to) {
-  this.send(Messages.requestCall(to))
+  send.call(this, Messages.requestCall(to))
 }
 
 Signal.prototype.acceptCall = function acceptCall(from) {
-  this.send(Messages.acceptCall(from))
+  send.call(this, Messages.acceptCall(from))
 }
 
 Signal.prototype.rejectCall = function rejectCall(from) {
-  this.send(Messages.rejectCall(from))
+  send.call(this, Messages.rejectCall(from))
 }
 
 Signal.prototype.sendCallerDescriptor = function sendCallerDescriptor(to, sdp) {
-  this.send(Messages.sendCallerDescriptor(to, sdp))
+  send.call(this, Messages.sendCallerDescriptor(to, sdp))
 }
 
 Signal.prototype.sendRecipientDescriptor = function sendRecipientDescriptor(to, sdp) {
-  this.send(Messages.sendRecipientDescriptor(to, sdp))
+  send.call(this, Messages.sendRecipientDescriptor(to, sdp))
 }
 
 Signal.prototype.sendICECandidate = function sendICECandidate(to, candidate) {
-  this.send(Messages.sendICECandidate(to, candidate))
+  send.call(this, Messages.sendICECandidate(to, candidate))
 }
 
 module.exports = Signal
