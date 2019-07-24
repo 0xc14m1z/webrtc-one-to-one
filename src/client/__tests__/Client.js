@@ -26,6 +26,7 @@ describe('Client', () => {
 
   afterEach(() => {
     server.stop()
+    sinon.restore()
   })
 
   describe('constructor', () => {
@@ -94,15 +95,35 @@ describe('Client', () => {
 
   describe('Outbound messages', () => {
 
-    it('connectAs')
+    it('connectAs', () => {
+      sinon.replace(client.signal, 'connectAs', sinon.spy())
+
+      client.connectAs('luke skywalker')
+      expect(client.signal.connectAs).to.have.been.called
+    })
 
     it('setLocalStream')
 
-    it('requestCall')
+    it('requestCall', () => {
+      sinon.replace(client.signal, 'requestCall', sinon.spy())
 
-    it('acceptCall')
+      client.requestCall('luke skywalker')
+      expect(client.signal.requestCall).to.have.been.called
+    })
 
-    it('rejectCall')
+    it('acceptCall', () => {
+      sinon.replace(client.signal, 'acceptCall', sinon.spy())
+
+      client.acceptCall('luke skywalker')
+      expect(client.signal.acceptCall).to.have.been.called
+    })
+
+    it('rejectCall', () => {
+      sinon.replace(client.signal, 'rejectCall', sinon.spy())
+
+      client.rejectCall('luke skywalker')
+      expect(client.signal.rejectCall).to.have.been.called
+    })
 
   })
 

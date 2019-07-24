@@ -57,4 +57,20 @@ Client.prototype.openConnection = function openConnection() {
   this.signal.openConnection()
 }
 
+Client.prototype.connectAs = function connectAs(username) {
+  this.signal.connectAs(username)
+}
+
+Client.prototype.requestCall = function requestCall(to) {
+  this.signal.requestCall(to)
+}
+
+Client.prototype.acceptCall = function acceptCall(from) {
+  this.signal.acceptCall(from)
+}
+
+Client.prototype.rejectCall = function rejectCall(from) {
+  this.signal.rejectCall(from)
+}
+
 module.exports = Client
