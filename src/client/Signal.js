@@ -10,8 +10,10 @@ const Socket = {
   MESSAGE: 'message'
 }
 
-function Signal() {
+function Signal(url) {
   EventsEmitter.call(this)
+
+  this.url = url
   this.socket = null
   this.isConnected = false
 }
@@ -22,8 +24,8 @@ Signal.ERROR = 'ERROR'
 
 Signal.prototype = Object.create(EventsEmitter.prototype)
 
-Signal.prototype.openConnection = function openConnection(url) {
-  this.socket = new WebSocket(url)
+Signal.prototype.openConnection = function openConnection() {
+  this.socket = new WebSocket(this.url)
 
   function onOpen() {
     this.isConnected = true
