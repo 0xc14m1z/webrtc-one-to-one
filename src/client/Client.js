@@ -21,6 +21,9 @@ function Client(url, options) {
   setupSignal.call(this, url)
 }
 
+Client.OPEN = Signal.OPEN
+Client.CLOSE = Signal.CLOSE
+Client.ERROR = Signal.ERROR
 Client.STREAM = 'STREAM'
 
 function bubbleUp(event, payload) {
