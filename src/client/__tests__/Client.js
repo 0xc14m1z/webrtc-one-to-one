@@ -102,7 +102,10 @@ describe('Client', () => {
       expect(client.signal.connectAs).to.have.been.called
     })
 
-    it('setLocalStream')
+    it('setLocalStream', () => {
+      client.setLocalStream('fake stream')
+      expect(client.stream).to.equal('fake stream')
+    })
 
     it('requestCall', () => {
       sinon.replace(client.signal, 'requestCall', sinon.spy())

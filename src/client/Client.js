@@ -61,6 +61,10 @@ Client.prototype.connectAs = function connectAs(username) {
   this.signal.connectAs(username)
 }
 
+Client.prototype.setLocalStream = function setLocalStream(stream) {
+  this.stream = stream
+}
+
 Client.prototype.requestCall = function requestCall(to) {
   this.signal.requestCall(to)
 }
