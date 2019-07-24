@@ -11,6 +11,7 @@ chai.use(sinonChai)
 const Signal = require('../Signal')
 const Client = require('../Client')
 const MessageType = require('../../common/messageTypes')
+const decodeMessage = require('../../common/decodeMessage')
 
 describe('Client', () => {
 
@@ -91,14 +92,19 @@ describe('Client', () => {
 
   })
 
-  describe('connectAs', () => {})
+  describe('Outbound messages', () => {
 
-  describe('setLocalStream', () => {})
+    it('connectAs')
 
-  describe('requestCall', () => {})
+    it('setLocalStream')
 
-  describe('acceptCall', () => {})
+    it('requestCall')
 
-  describe('rejectCall', () => {})
+    it('acceptCall')
+
+    it('rejectCall')
+
+  })
+
 
 })

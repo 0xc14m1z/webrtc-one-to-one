@@ -18,8 +18,7 @@ function Client(url, options) {
   this.stream = null
 
   this.signal = null
-  setupSignal.call(this)
-  this.signal.openConnection(url)
+  setupSignal.call(this, url)
 }
 
 Client.STREAM = 'STREAM'
@@ -28,8 +27,8 @@ function bubbleUp(event, payload) {
   this.emit(event, payload)
 }
 
-function setupSignal() {
-  this.signal = new Signal()
+function setupSignal(url) {
+  this.signal = new Signal(url)
 
   const eventsToBubble = [
     Signal.OPEN,
@@ -50,5 +49,9 @@ function setupSignal() {
 }
 
 Client.prototype = Object.create(EventsEmitter.prototype)
+
+Client.prototype.openConnection = function openConnection() {
+  this.signal.openConnection()
+}
 
 module.exports = Client
