@@ -49,6 +49,8 @@ function setupSignal(url) {
   eventsToBubble.forEach(
     event => this.signal.on(event, bubbleUp.bind(this, event))
   )
+
+  this.signal.on(MessageType.CALL_ACCEPTED, startCall.bind(this))
 }
 
 Client.prototype = Object.create(EventsEmitter.prototype)
@@ -75,6 +77,45 @@ Client.prototype.acceptCall = function acceptCall(from) {
 
 Client.prototype.rejectCall = function rejectCall(from) {
   this.signal.rejectCall(from)
+}
+
+function startCall(recipient) {
+  setupRTCConnection.call(this, recipient)
+  sendLocalDescriptor.call(this, recipient)
+  this.emit(MessageType.CALL_ACCEPTED)
+}
+
+function setupRTCConnection(recipient) {
+  this.connection = new RTCPeerConnection(this.options)
+  this.connection.onicecandidate = onIceCandidate.bind(this, recipient)
+  this.connection.ontrack = onRemoteTrack.bind(this)
+
+  if ( this.stream )
+    this.stream.getTracks()
+               .forEach(track => this.connection.addTrack(track, this.stream))
+
+  function onIceCandidate(recipient, event) {
+    if ( event.candidate )
+      this.signal.sendIceCandidate(recipient, event.candidate)
+  }
+
+  function onRemoteTrack(event) {
+    this.emit(Client.STREAM, ...event.streams)
+  }
+}
+
+function sendLocalDescriptor(recipient) {
+  this.connection.createOffer()
+                 .then(onOffer.bind(this))
+
+  function onOffer(offer) {
+    this.connection.setLocalDescription(offer)
+                   .then(onLocalDescriptionSet.bind(this))
+  }
+
+  function onLocalDescriptionSet() {
+    this.signal.sendLocalDescriptor(recipient, this.connection.localDescription)
+  }
 }
 
 module.exports = Client

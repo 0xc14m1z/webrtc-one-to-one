@@ -63,7 +63,7 @@ describe('Client', () => {
         MessageType.CALL_REQUESTED,
         MessageType.CALL_REJECTED
       ]
-      expect(client.signal.handlers).to.have.keys(registeredEvents)
+      expect(client.signal.handlers).to.include.all.keys(registeredEvents)
     })
 
     it('sets events that bubbles up', () => {
@@ -89,6 +89,12 @@ describe('Client', () => {
       eventsToBubble.forEach(event => client.signal.emit(event))
 
       expect(handler.callCount).to.equal(eventsToBubble.length)
+    })
+
+    it('sets events for calls-related messages', () => {
+      expect(client.signal.handlers).to.include.all.keys(
+        MessageType.CALL_ACCEPTED
+      )
     })
 
   })
