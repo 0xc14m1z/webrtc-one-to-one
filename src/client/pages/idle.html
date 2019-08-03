@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ChatRoulette Home Assignment</title>
+    <link rel="stylesheet" href="../styles/main.scss" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  </head>
+  <body>
+
+    <div id="idle">
+
+      <div id="streams">
+
+        <div id="local-stream">
+          <div class="video-container">
+            <video autoplay muted loop>
+              <source src="https://storage.coverr.co/videos/Tulips-Screen?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IjExNDMyN0NEOTRCMUFCMTFERTE3IiwiaWF0IjoxNTY0ODQ5NzE0LCJleHAiOjE1NjQ4NTMzMTR9.mYyG7ltHa3uQag3LJAvt6odmTL1fgJrZFLrzJeJbYJw" />
+            </video>
+          </div>
+        </div>
+
+        <div id="remote-stream">
+          <div class="video-container">
+            <video autoplay muted loop>
+              <source src="https://storage.coverr.co/videos/Cloudy_Road?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IjExNDMyN0NEOTRCMUFCMTFERTE3IiwiaWF0IjoxNTY0ODUxNzU0LCJleHAiOjE1NjQ4NTUzNTR9.yRtB3XsKJy3MwOw9sdxEIMMSvhBZx6Yp6hwmgV5FqH4" />
+            </video>
+          </div>
+          <div id="call-request-container" class="hidden">
+            <div class="message error screen">
+              The recipient isn't connected.
+            </div>
+            <form class="screen">
+              <input type="text" name="recipient" placeholder="recipient" />
+              <button>Call</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="actions">
+        <button>Next</button>
+      </div>
+
+      <div id="dialogs" class="hidden">
+        <div class="dialog">
+          <div class="dialog-body">
+            <p>
+              <strong>Pino</strong> is calling...
+            </p>
+          </div>
+          <div class="dialog-actions">
+            <button>Accept</button> <button class="secondary">Reject</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+</html>

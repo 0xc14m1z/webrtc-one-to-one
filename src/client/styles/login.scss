@@ -1,0 +1,18 @@
+#login {
+  h1 {
+    text-align: center;
+  }
+
+  form {
+    background: $mid-grey;
+    padding: $rg-gutter;
+    border: 2px solid $grey;
+    border-radius: $border-radius;
+    display: flex;
+    flex-direction: column;
+
+    input {
+      margin-bottom: $md-gutter;
+    }
+  }
+}

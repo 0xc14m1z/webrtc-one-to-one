@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400&display=swap');
+
+$border-radius: 4px;
+
+$rg-gutter: 20px;
+$md-gutter: 10px;
+
+$light-grey: #EEE;
+$mid-grey: #DDD;
+$grey: #CCC;
+
+$blue: #2196F3;
+
+$red: #C62828;
+
+$smartphone: "screen and (max-width: 640px)";
+
+* {
+  position: relative;
+  box-sizing: border-box;
+  font-family: 'Source Sans Pro', sans-serif;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px lighten($blue, 30%);
+    border-color: $blue;
+  }
+}
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  background: $light-grey;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+.screen {
+  width: 90%;
+  max-width: 300px;
+}
+
+h1 {
+  font-weight: 300;
+}
+
+input {
+  padding: $md-gutter;
+  border: 2px solid $grey;
+  border-radius: $border-radius;
+  font-size: 1em;
+
+  &[disabled] {
+    background: $light-grey;
+  }
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  padding: $md-gutter;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 0.8em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: $blue;
+  color: #FFF;
+
+  &[disabled] {
+    background: lighten($blue, 30%);
+  }
+
+  &.secondary {
+    background: transparent;
+    color: $blue;
+
+    &[disabled] {
+      color: $grey;
+    }
+  }
+
+  .loader {
+    position: absolute;
+    right: $md-gutter;
+    border-color: #FFF;
+    border-top-color: $blue;
+  }
+}
+
+.loader {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 100px;
+  border: 2px solid $grey;
+  border-top-color: $blue;
+  animation: rotate 1s linear infinite;
+
+  &.big {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+  }
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.message {
+  margin: $rg-gutter 0px;
+  padding: $md-gutter;
+  border: 2px solid transparent;
+  border-radius: $border-radius;
+
+  &.error {
+    border-color: $red;
+    background-color: lighten($red, 50%);
+    color: $red;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+@import "./login.scss";
+@import "./local-stream-retrieval.scss";
+@import "./idle.scss";

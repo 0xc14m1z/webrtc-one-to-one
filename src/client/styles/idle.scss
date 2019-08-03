@@ -1,0 +1,177 @@
+#idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  .video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    @media #{$smartphone} {
+      background: $grey;
+    }
+
+    video {
+      display: inline-block;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: $border-radius;
+    }
+  }
+
+  #streams {
+    flex-grow: 1;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+
+    #local-stream {
+      max-width: 300px;
+      height: 100%;
+      max-height: 300px;
+
+      @media #{$smartphone} {
+        position: absolute;
+        top: $md-gutter;
+        right: $md-gutter;
+        z-index: 1;
+
+        max-width: 30%;
+        max-height: 125px;
+      }
+    }
+
+    #remote-stream {
+      flex-grow: 1;
+      width: 100%;
+      max-width: 1920px;
+      max-height: 100%;
+
+      display: flex;
+      margin-bottom: $md-gutter;
+
+      @media #{$smartphone} {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        left: 0px;
+        bottom: 0px;
+        z-index: 0;
+        margin-bottom: 0px;
+      }
+
+      .video-container {
+        width: 100%;
+      }
+
+      #call-request-container {
+        flex-grow: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        margin: $rg-gutter;
+
+        border: 5px dashed $grey;
+        border-radius: 10px;
+
+        padding: $rg-gutter;
+
+        form {
+          background: $mid-grey;
+          padding: $rg-gutter;
+          border: 2px solid $grey;
+          border-radius: $border-radius;
+          display: flex;
+          flex-direction: column;
+
+          input {
+            margin-bottom: $md-gutter;
+          }
+        }
+      }
+    }
+
+  }
+
+  #actions {
+    padding: $md-gutter;
+
+    @media #{$smartphone} {
+      position: absolute;
+      bottom: 0px;
+      z-index: 1;
+    }
+  }
+
+  #dialogs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.75);
+
+    .dialog {
+      display: flex;
+      flex-direction: column;
+
+      width: 80%;
+      max-width: 500px;
+      @media #{$smartphone} { max-width: 250px; }
+
+      background: #FFF;
+      border-radius: $border-radius;
+
+      & > .dialog-body {
+        padding: $rg-gutter;
+
+        p {
+          font-size: 1.5em;
+          font-weight: 300;
+          margin: 0px;
+        }
+      }
+
+      & > .dialog-actions {
+        display: flex;
+        flex-direction: row;
+        @media #{$smartphone} {
+          flex-direction: column;
+        }
+        border-top: 1px solid $grey;
+        padding: $md-gutter;
+
+        & > * {
+          margin-right: $md-gutter;
+          &:last-child {
+            margin-right: 0px;
+          }
+
+          @media #{$smartphone} {
+            margin-right: 0px;
+
+            margin-bottom: $md-gutter;
+            &:last-child {
+              margin-bottom: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
