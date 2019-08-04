@@ -37,6 +37,10 @@ function rejectCall(from) {
   return encodeMessage(MessageType.REJECT_CALL, from)
 }
 
+function callRejected(by) {
+  return encodeMessage(MessageType.CALL_REJECTED, by)
+}
+
 function sendCallerDescriptor(to, sdp) {
   return encodeMessage(MessageType.SEND_CALLER_DESCRIPTOR, { to, sdp })
 }
@@ -59,6 +63,7 @@ module.exports = {
   acceptCall,
   callAccepted,
   rejectCall,
+  callRejected,
   sendCallerDescriptor,
   sendRecipientDescriptor,
   sendICECandidate

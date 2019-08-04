@@ -14,7 +14,7 @@ socket.getClientByUsername = function getClientByUsername(username) {
 }
 
 socket.isUsernameAvailable = function isUsernameAvailable(username) {
-  return socket.getClientByUsername(username) !== null
+  return !this.getClientByUsername(username)
 }
 
 socket.on('connection', client => {
