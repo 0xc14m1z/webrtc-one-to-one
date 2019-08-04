@@ -29,6 +29,10 @@ function acceptCall(from) {
   return encodeMessage(MessageType.ACCEPT_CALL, from)
 }
 
+function callAccepted(by) {
+  return encodeMessage(MessageType.CALL_ACCEPTED, by)
+}
+
 function rejectCall(from) {
   return encodeMessage(MessageType.REJECT_CALL, from)
 }
@@ -53,6 +57,7 @@ module.exports = {
   callRequested,
   unknownRecipient,
   acceptCall,
+  callAccepted,
   rejectCall,
   sendCallerDescriptor,
   sendRecipientDescriptor,
