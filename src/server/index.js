@@ -8,9 +8,13 @@ const socket = new WebSocket.Server({
   port: process.env.PORT || 8888
 })
 
-socket.isUsernameAvailable = function(username) {
-  return !Array.from(this.clients)
-               .find(client => client.username === username)
+socket.getClientByUsername = function getClientByUsername(username) {
+  return Array.from(this.clients)
+              .find(client => client.username === username)
+}
+
+socket.isUsernameAvailable = function isUsernameAvailable(username) {
+  return socket.getClientByUsername(username) !== null
 }
 
 socket.on('connection', client => {

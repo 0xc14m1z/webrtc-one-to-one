@@ -17,6 +17,14 @@ function requestCall(to) {
   return encodeMessage(MessageType.REQUEST_CALL, to)
 }
 
+function callRequested(from) {
+  return encodeMessage(MessageType.CALL_REQUESTED, from)
+}
+
+function unknownRecipient() {
+  return encodeMessage(MessageType.UNKNOWN_RECIPIENT)
+}
+
 function acceptCall(from) {
   return encodeMessage(MessageType.ACCEPT_CALL, from)
 }
@@ -42,6 +50,8 @@ module.exports = {
   usernameTaken,
   connected,
   requestCall,
+  callRequested,
+  unknownRecipient,
   acceptCall,
   rejectCall,
   sendCallerDescriptor,
