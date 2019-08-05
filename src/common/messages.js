@@ -61,6 +61,10 @@ function sendICECandidate(to, candidate) {
   return encodeMessage(MessageType.SEND_ICE_CANDIDATE, { to, candidate })
 }
 
+function iceCandidateReceived(from, candidate) {
+  return encodeMessage(MessageType.ICE_CANDIDATE_RECEIVED, { from, candidate })
+}
+
 module.exports = {
   connectAs,
   usernameTaken,
@@ -76,5 +80,6 @@ module.exports = {
   callerDescriptorReceived,
   sendRecipientDescriptor,
   recipientDescriptorReceived,
-  sendICECandidate
+  sendICECandidate,
+  iceCandidateReceived
 }
