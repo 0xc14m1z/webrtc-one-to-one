@@ -11,7 +11,7 @@ describe('onRequestCall', () => {
   it('sends a CALL_REQUESTED message to the receiver', done => {
     const socket = {
             isUsernameAvailable: () => false,
-            getClientByUsername: username => ({
+            getClientByUsername: () => ({
               send: message => {
                 expect(message).to.equal(Messages.callRequested(caller))
                 done()

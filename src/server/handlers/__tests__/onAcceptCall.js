@@ -10,7 +10,7 @@ describe('onAcceptCall', () => {
 
   it('sends a CALL_ACCEPTED message to the caller', done => {
     const socket = {
-            getClientByUsername: username => ({
+            getClientByUsername: () => ({
               send: message => {
                 expect(message).to.equal(Messages.callAccepted(receiver))
                 done()

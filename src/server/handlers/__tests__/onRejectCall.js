@@ -10,7 +10,7 @@ describe('onRejectCall', () => {
 
   it('sends a CALL_REJECTED message to the caller', done => {
     const socket = {
-            getClientByUsername: username => ({
+            getClientByUsername: () => ({
               send: message => {
                 expect(message).to.equal(Messages.callRejected(receiver))
                 done()
