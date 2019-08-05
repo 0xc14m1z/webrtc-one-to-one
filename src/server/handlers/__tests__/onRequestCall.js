@@ -6,9 +6,9 @@ const onRequestCall = require('../onRequestCall')
 describe('onRequestCall', () => {
 
   const caller = 'luke skywalker'
-  const receiver = 'princess leia'
+  const recipient = 'princess leia'
 
-  it('sends a CALL_REQUESTED message to the receiver', done => {
+  it('sends a CALL_REQUESTED message to the recipient', done => {
     const socket = {
             isUsernameAvailable: () => false,
             getClientByUsername: () => ({
@@ -22,7 +22,7 @@ describe('onRequestCall', () => {
             username: caller
           }
 
-    onRequestCall.call(socket, client, receiver)
+    onRequestCall.call(socket, client, recipient)
   })
 
   it('reply with UNKNOWN_RECIPIENT if the recipient isn\'t in the clients list', () => {
@@ -32,7 +32,7 @@ describe('onRequestCall', () => {
               expect(message).to.equal(Messages.unknownRecipient())
           }
 
-    onRequestCall.call(socket, client, receiver)
+    onRequestCall.call(socket, client, recipient)
   })
 
 })

@@ -6,19 +6,19 @@ const onAcceptCall = require('../onAcceptCall')
 describe('onAcceptCall', () => {
 
   const caller = 'luke skywalker'
-  const receiver = 'princess leia'
+  const recipient = 'princess leia'
 
   it('sends a CALL_ACCEPTED message to the caller', done => {
     const socket = {
             getClientByUsername: () => ({
               send: message => {
-                expect(message).to.equal(Messages.callAccepted(receiver))
+                expect(message).to.equal(Messages.callAccepted(recipient))
                 done()
               }
             })
           },
           client = {
-            username: receiver
+            username: recipient
           }
 
     onAcceptCall.call(socket, client, caller)

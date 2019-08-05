@@ -1,34 +1,34 @@
 const expect = require('chai').expect
 
 const Messages = require('../../../common/messages')
-const onSendCallerDescriptor = require('../onSendCallerDescriptor')
+const onSendRecipientDescriptor = require('../onSendRecipientDescriptor')
 
-describe('onSendCallerDescriptor', () => {
+describe('onSendRecipientDescriptor', () => {
 
   const caller = 'luke skywalker'
   const recipient = 'princess leia'
   const descriptor = 'session descriptor'
 
-  it('sends a CALLER_DESCRIPTOR_RECEIVED message to the recipient', done => {
+  it('sends a RECIPIENT_DESCRIPTOR_RECEIVED message to the caller', done => {
     const socket = {
             getClientByUsername: () => ({
               send: message => {
                 expect(message).to.equal(
-                  Messages.callerDescriptorReceived(caller, descriptor)
+                  Messages.recipientDescriptorReceived(recipient, descriptor)
                 )
                 done()
               }
             })
           },
           client = {
-            username: caller
+            username: recipient
           },
           payload = {
-            to: recipient,
+            to: caller,
             sdp: descriptor
           }
 
-    onSendCallerDescriptor.call(socket, client, payload)
+    onSendRecipientDescriptor.call(socket, client, payload)
   })
 
 })
