@@ -15,7 +15,8 @@ function Client(url, options) {
   this.options = options || defaultOptions
 
   this.connection = null
-  this.stream = null
+  this.localStream = null
+  this.remoteStream = null
 
   this.signal = null
   setupSignal.call(this, url)
@@ -70,8 +71,8 @@ Client.prototype.connectAs = function connectAs(username) {
 }
 
 Client.prototype.setLocalStream = function setLocalStream(stream) {
-  this.stream = stream
-  this.emit(Client.LOCAL_STREAM, this.stream)
+  this.localStream = stream
+  this.emit(Client.LOCAL_STREAM, this.localStream)
 }
 
 Client.prototype.requestCall = function requestCall(to) {
@@ -101,7 +102,7 @@ function startCall(recipient) {
 
 function answerCall({ from: caller, sdp }) {
   setupRTCConnection.call(this, caller)
-  onRemoteDescriptor.call(this, sdp)
+  onRemoteDescriptor.call(this, { sdp })
   sendLocalDescriptor.call(this, RECIPIENT, caller)
 }
 
@@ -110,8 +111,8 @@ function setupRTCConnection(recipient) {
   this.connection.onicecandidate = onIceCandidate.bind(this, recipient)
   this.connection.ontrack = onRemoteTrack.bind(this)
 
-  if ( this.stream )
-    this.stream.getTracks().forEach(addTrackToConnection.bind(this))
+  if ( this.localStream )
+    this.localStream.getTracks().forEach(addTrackToConnection.bind(this))
 
   this.signal.on(
     MessageType.ICE_CANDIDATE_RECEIVED,
@@ -120,15 +121,19 @@ function setupRTCConnection(recipient) {
 
   function onIceCandidate(recipient, event) {
     if ( event.candidate )
-      this.signal.sendIceCandidate(recipient, event.candidate)
+      this.signal.sendICECandidate(recipient, event.candidate)
   }
 
   function onRemoteTrack(event) {
-    this.emit(Client.REMOTE_STREAM, ...event.streams)
+    if ( !this.remoteStream ) this.remoteStream = new MediaStream()
+    if ( event.track ) {
+      this.remoteStream.addTrack(event.track)
+      this.emit(Client.REMOTE_STREAM, this.remoteStream)
+    }
   }
 
   function addTrackToConnection(track) {
-    this.connection.addTrack(track, this.stream)
+    this.connection.addTrack(track, this.localStream)
   }
 }
 
@@ -150,11 +155,11 @@ function sendLocalDescriptor(as, to) {
   }
 }
 
-function onRemoteDescriptor(descriptor) {
+function onRemoteDescriptor({ sdp: descriptor }) {
   this.connection.setRemoteDescription(new RTCSessionDescription(descriptor))
 }
 
-function onIceCandidateReceived(candidate) {
+function onIceCandidateReceived({ candidate }) {
   this.connection.addIceCandidate(new RTCIceCandidate(candidate))
 }
 

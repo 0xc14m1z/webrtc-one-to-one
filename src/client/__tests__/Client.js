@@ -110,7 +110,7 @@ describe('Client', () => {
 
     it('setLocalStream', () => {
       client.setLocalStream('fake stream')
-      expect(client.stream).to.equal('fake stream')
+      expect(client.localStream).to.equal('fake stream')
     })
 
     it('requestCall', () => {

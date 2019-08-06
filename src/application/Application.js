@@ -1,5 +1,9 @@
 const Client = require('../client/Client')
-const { ConnectionView, LocalStreamRetrievalView } = require('./views')
+const {
+  ConnectionView,
+  LocalStreamRetrievalView,
+  CallView
+} = require('./views')
 
 function Application() {
   console.log('Launching...')
@@ -13,6 +17,7 @@ function Application() {
   this.client.on(Client.ERROR, onOpen.bind(this))
 
   this.client.on(Client.CONNECTED, onConnection.bind(this))
+  this.client.on(Client.LOCAL_STREAM, onLocalStream.bind(this))
 }
 
 function onOpen() {
@@ -25,6 +30,12 @@ function onConnection() {
   console.log('Connected')
 
   this.view = new LocalStreamRetrievalView(this)
+}
+
+function onLocalStream() {
+  console.log('Got local stream')
+
+  this.view = new CallView(this)
 }
 
 Application.prototype.render = function render(html) {
