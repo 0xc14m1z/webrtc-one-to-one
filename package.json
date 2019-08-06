@@ -9,7 +9,7 @@
     "test": "mocha --recursive 'src/**/__tests__/*.js'",
     "test:watch": "npm test -- --watch",
     "test:coverage": "nyc --reporter=text -- npm test",
-    "build": "parcel build src/application/pages/index.html"
+    "build": "rm -rf dist && parcel build src/application/pages/index.html"
   },
   "author": "Luca Ramundo <0xc14m1z@gmail.com>",
   "license": "ISC",
