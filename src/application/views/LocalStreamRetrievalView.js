@@ -1,13 +1,10 @@
 function LocalStreamRetrievalView(application) {
 
   let $takingMediaLoader
-  let $retakeContainer
-  let $retakeButton
-  let $retakingMediaLoader
+  let $errorMessage
 
   render()
   setReferences()
-  addEventsListeners()
 
   getLocalStream()
 
@@ -15,27 +12,16 @@ function LocalStreamRetrievalView(application) {
     application.render(`
       <div id="local-stream-retrieval" class="screen">
         <span class="loader big"></span>
-        <div id="retake" class="hidden">
-          <div class="message error">
-            You must grant access to your webcam and microphone to use this application
-          </div>
-          <button>
-            Access webcam <span class="loader hidden"></span>
-          </button>
+        <div class="message error hidden">
+          You must grant access to your webcam and microphone to use this application.
         </div>
       </div>
     `)
   }
 
   function setReferences() {
-    $takingMediaLoader = document.querySelector('#local-stream-retrieval > .loader')
-    $retakeContainer = document.querySelector('#local-stream-retrieval #retake')
-    $retakeButton = document.querySelector('#local-stream-retrieval button')
-    $retakingMediaLoader = document.querySelector('#local-stream-retrieval button > .loader')
-  }
-
-  function addEventsListeners() {
-    $retakeButton.addEventListener('click', performRetake)
+    $takingMediaLoader = document.querySelector('#local-stream-retrieval .loader')
+    $errorMessage = document.querySelector('#local-stream-retrieval .message')
   }
 
   function getLocalStream() {
@@ -50,16 +36,7 @@ function LocalStreamRetrievalView(application) {
 
   function onError() {
     $takingMediaLoader.classList.add('hidden')
-    $retakeContainer.classList.remove('hidden')
-    $retakeButton.disabled = false
-    $retakingMediaLoader.classList.add('hidden')
-  }
-
-  function performRetake() {
-    $retakeButton.disabled = true
-    $retakingMediaLoader.classList.remove('hidden')
-
-    getLocalStream()
+    $errorMessage.classList.remove('hidden')
   }
 
 }
