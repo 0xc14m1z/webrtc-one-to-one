@@ -27,7 +27,7 @@ $smartphone: "screen and (max-width: 640px)";
   }
 }
 
-html, body {
+html, body, #root {
   margin: 0px;
   padding: 0px;
   width: 100%;
@@ -35,7 +35,7 @@ html, body {
   background: $light-grey;
 }
 
-body {
+#root {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,4 +138,4 @@ button {
 
 @import "./login.scss";
 @import "./local-stream-retrieval.scss";
-@import "./idle.scss";
+@import "./call.scss";

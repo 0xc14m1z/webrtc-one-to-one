@@ -9,19 +9,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   </head>
   <body>
-    
-    <div id="login" class="screen">
-      <h1>Login</h1>
-      <div class="message error">
-        The username you choose has already been taken.
+    <div id="root">
+      
+      <div id="login" class="screen">
+        <h1>Connect</h1>
+        <div class="message error">
+          The username you choose has already been taken.
+        </div>
+        <form>
+          <input
+            disabled
+            type="text"
+            name="username"
+            placeholder="username"
+            autocomplete="off"
+          />
+          <button disabled>
+            Connect <span class="loader"></span>
+          </button>
+        </form>
       </div>
-      <form>
-        <input disabled type="text" name="username" placeholder="username" />
-        <button disabled>
-          Connect <span class="loader"></span>
-        </button>
-      </form>
-    </div>
 
+    </div>
   </body>
 </html>
