@@ -22,9 +22,11 @@ function Client(url, options) {
 }
 
 Client.OPEN = Signal.OPEN
+Client.CONNECTED = MessageType.CONNECTED
 Client.CLOSE = Signal.CLOSE
 Client.ERROR = Signal.ERROR
-Client.STREAM = 'STREAM'
+Client.LOCAL_STREAM = 'LOCAL_STREAM'
+Client.REMOTE_STREAM = 'REMOTE_STREAM'
 
 const CALLER = 'CALLER'
 const RECIPIENT = 'RECIPIENT'
@@ -69,6 +71,7 @@ Client.prototype.connectAs = function connectAs(username) {
 
 Client.prototype.setLocalStream = function setLocalStream(stream) {
   this.stream = stream
+  this.emit(Client.LOCAL_STREAM, this.stream)
 }
 
 Client.prototype.requestCall = function requestCall(to) {
@@ -121,7 +124,7 @@ function setupRTCConnection(recipient) {
   }
 
   function onRemoteTrack(event) {
-    this.emit(Client.STREAM, ...event.streams)
+    this.emit(Client.REMOTE_STREAM, ...event.streams)
   }
 
   function addTrackToConnection(track) {
