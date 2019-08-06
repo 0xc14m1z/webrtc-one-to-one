@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ChatRoulette Home Assignment</title>
+    <title>ChatRoulette Home Assignment | Connection View</title>
     <link rel="stylesheet" href="../styles/main.scss" />
 
     <meta charset="utf-8">
@@ -10,22 +10,21 @@
   </head>
   <body>
     <div id="root">
-      
-      <div id="login" class="screen">
+
+      <div id="connection" class="screen">
         <h1>Connect</h1>
-        <div class="message error">
+        <div class="message error hidden">
           The username you choose has already been taken.
         </div>
         <form>
           <input
-            disabled
             type="text"
             name="username"
             placeholder="username"
             autocomplete="off"
           />
           <button disabled>
-            Connect <span class="loader"></span>
+            Connect <span class="loader hidden"></span>
           </button>
         </form>
       </div>
