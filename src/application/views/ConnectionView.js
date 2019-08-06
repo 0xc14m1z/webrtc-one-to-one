@@ -68,6 +68,7 @@ function ConnectionView(application) {
   function onUsernameTaken() {
     $errorMessage.classList.remove('hidden')
     $usernameInput.disabled = false
+    $usernameInput.focus()
     $connectButton.disabled = false
     $connectionLoader.classList.add('hidden')
   }

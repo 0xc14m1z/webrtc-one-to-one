@@ -1,5 +1,7 @@
 const ConnectionView = require('./ConnectionView')
+const LocalStreamRetrievalView = require('./LocalStreamRetrievalView')
 
 module.exports = {
-  ConnectionView
+  ConnectionView,
+  LocalStreamRetrievalView
 }
