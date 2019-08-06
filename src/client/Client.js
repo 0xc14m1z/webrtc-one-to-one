@@ -26,6 +26,9 @@ Client.CLOSE = Signal.CLOSE
 Client.ERROR = Signal.ERROR
 Client.STREAM = 'STREAM'
 
+const CALLER = 'CALLER'
+const RECIPIENT = 'RECIPIENT'
+
 function bubbleUp(event, payload) {
   this.emit(event, payload)
 }
@@ -51,6 +54,7 @@ function setupSignal(url) {
   )
 
   this.signal.on(MessageType.CALL_ACCEPTED, startCall.bind(this))
+  this.signal.on(MessageType.CALLER_DESCRIPTOR_RECEIVED, answerCall.bind(this))
 }
 
 Client.prototype = Object.create(EventsEmitter.prototype)
@@ -81,8 +85,21 @@ Client.prototype.rejectCall = function rejectCall(from) {
 
 function startCall(recipient) {
   setupRTCConnection.call(this, recipient)
-  sendLocalDescriptor.call(this, recipient)
+
+  this.signal.on(
+    MessageType.RECIPIENT_DESCRIPTOR_RECEIVED,
+    onRemoteDescriptor.bind(this)
+  )
+
+  sendLocalDescriptor.call(this, CALLER, recipient)
+
   this.emit(MessageType.CALL_ACCEPTED)
+}
+
+function answerCall({ from: caller, sdp }) {
+  setupRTCConnection.call(this, caller)
+  onRemoteDescriptor.call(this, sdp)
+  sendLocalDescriptor.call(this, RECIPIENT, caller)
 }
 
 function setupRTCConnection(recipient) {
@@ -91,8 +108,12 @@ function setupRTCConnection(recipient) {
   this.connection.ontrack = onRemoteTrack.bind(this)
 
   if ( this.stream )
-    this.stream.getTracks()
-               .forEach(track => this.connection.addTrack(track, this.stream))
+    this.stream.getTracks().forEach(addTrackToConnection.bind(this))
+
+  this.signal.on(
+    MessageType.ICE_CANDIDATE_RECEIVED,
+    onIceCandidateReceived.bind(this)
+  )
 
   function onIceCandidate(recipient, event) {
     if ( event.candidate )
@@ -102,20 +123,36 @@ function setupRTCConnection(recipient) {
   function onRemoteTrack(event) {
     this.emit(Client.STREAM, ...event.streams)
   }
+
+  function addTrackToConnection(track) {
+    this.connection.addTrack(track, this.stream)
+  }
 }
 
-function sendLocalDescriptor(recipient) {
-  this.connection.createOffer()
-                 .then(onOffer.bind(this))
+function sendLocalDescriptor(as, to) {
+  const descriptorFn = as === CALLER ? 'createOffer' : 'createAnswer'
 
-  function onOffer(offer) {
-    this.connection.setLocalDescription(offer)
+  this.connection[descriptorFn]().then(onDescriptor.bind(this))
+
+  function onDescriptor(descriptor) {
+    this.connection.setLocalDescription(descriptor)
                    .then(onLocalDescriptionSet.bind(this))
   }
 
   function onLocalDescriptionSet() {
-    this.signal.sendLocalDescriptor(recipient, this.connection.localDescription)
+    const senderFn =
+      as === CALLER ? 'sendCallerDescriptor' : 'sendRecipientDescriptor'
+
+    this.signal[senderFn](to, this.connection.localDescription)
   }
+}
+
+function onRemoteDescriptor(descriptor) {
+  this.connection.setRemoteDescription(new RTCSessionDescription(descriptor))
+}
+
+function onIceCandidateReceived(candidate) {
+  this.connection.addIceCandidate(new RTCIceCandidate(candidate))
 }
 
 module.exports = Client
