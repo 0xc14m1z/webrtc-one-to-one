@@ -3,13 +3,16 @@ const expect = chai.expect
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 const { WebSocket, Server } = require('mock-socket')
+const Mocks = require('../mocks')
+const rewire = require('rewire')
 
 global.WebSocket = WebSocket
+global.RTCPeerConnection = Mocks.RTCPeerConnection
 
 chai.use(sinonChai)
 
 const Signal = require('../Signal')
-const Client = require('../Client')
+const Client = rewire('../Client')
 const MessageType = require('../../common/messageTypes')
 const decodeMessage = require('../../common/decodeMessage')
 
@@ -18,6 +21,9 @@ describe('Client', () => {
   const signalingUrl = 'ws://signaling:12345'
   let client
   let server
+
+  const caller = 'luke skywalker'
+  const recipient = 'princess leia'
 
   beforeEach(() => {
     server = new Server(signalingUrl)
@@ -99,12 +105,81 @@ describe('Client', () => {
 
   })
 
+  describe('Private methods', () => {
+
+    describe('startCall', () => {
+
+      it('gets called when CALL_ACCEPTED event is emitted', () => {
+        const startCall = sinon.spy()
+
+        // startCall cannot be replaced from outside because it's bound,
+        // thus a new bound function is returned on the fly
+        client.signal.handlers[MessageType.CALL_ACCEPTED][0] = startCall
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        expect(startCall).to.have.been.called
+        expect(startCall).to.have.been.calledWith(recipient)
+      })
+
+      it('sets up the RTCPeerConnection object', done => {
+        const revert = Client.__set__('setupRTCConnection', function (receiver) {
+          revert()
+
+          expect(receiver).to.equal(recipient)
+
+          done()
+        })
+
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+      })
+
+      it('adds a listener for the RECIPIENT_DESCRIPTOR_RECEIVED message', () => {
+        const message = MessageType.RECIPIENT_DESCRIPTOR_RECEIVED
+
+        expect(client.signal.handlers[message]).to.be.undefined
+
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        expect(client.signal.handlers[message]).to.be.an('array')
+        expect(client.signal.handlers[message]).to.have.lengthOf(1)
+      })
+
+      it('generates and sends the local session descriptor', done => {
+        const revert = Client.__set__('sendLocalDescriptor', function (as, to) {
+          revert()
+
+          expect(as).to.equal('CALLER')
+          expect(to).to.equal(recipient)
+
+          done()
+        })
+
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+      })
+
+      it('bubbles up the CALL_ACCEPTED event', done => {
+        const handler = sinon.spy()
+
+        client.on(MessageType.CALL_ACCEPTED, handler)
+        client.on(MessageType.CALL_ACCEPTED, assertions)
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        function assertions() {
+          expect(handler).to.have.been.called
+          done()
+        }
+      })
+
+    })
+
+  })
+
   describe('Outbound messages', () => {
 
     it('connectAs', () => {
       sinon.replace(client.signal, 'connectAs', sinon.spy())
 
-      client.connectAs('luke skywalker')
+      client.connectAs(caller)
       expect(client.signal.connectAs).to.have.been.called
     })
 
@@ -116,21 +191,21 @@ describe('Client', () => {
     it('requestCall', () => {
       sinon.replace(client.signal, 'requestCall', sinon.spy())
 
-      client.requestCall('luke skywalker')
+      client.requestCall(caller)
       expect(client.signal.requestCall).to.have.been.called
     })
 
     it('acceptCall', () => {
       sinon.replace(client.signal, 'acceptCall', sinon.spy())
 
-      client.acceptCall('luke skywalker')
+      client.acceptCall(caller)
       expect(client.signal.acceptCall).to.have.been.called
     })
 
     it('rejectCall', () => {
       sinon.replace(client.signal, 'rejectCall', sinon.spy())
 
-      client.rejectCall('luke skywalker')
+      client.rejectCall(caller)
       expect(client.signal.rejectCall).to.have.been.called
     })
 
