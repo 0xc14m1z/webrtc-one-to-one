@@ -103,6 +103,7 @@ function startCall(recipient) {
 function answerCall({ from: caller, sdp }) {
   setupRTCConnection.call(this, caller)
   onRemoteDescriptor.call(this, { sdp })
+  console.log('answerCall', RECIPIENT)
   sendLocalDescriptor.call(this, RECIPIENT, caller)
 }
 
@@ -138,6 +139,7 @@ function setupRTCConnection(recipient) {
 }
 
 function sendLocalDescriptor(as, to) {
+  console.log('sendLocalDescriptor', as)
   const descriptorFn = as === CALLER ? 'createOffer' : 'createAnswer'
 
   this.connection[descriptorFn]().then(onDescriptor.bind(this))

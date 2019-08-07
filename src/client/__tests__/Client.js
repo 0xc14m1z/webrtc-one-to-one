@@ -8,6 +8,9 @@ const rewire = require('rewire')
 
 global.WebSocket = WebSocket
 global.RTCPeerConnection = Mocks.RTCPeerConnection
+global.MediaStream = Mocks.MediaStream
+global.RTCSessionDescription = Mocks.RTCSessionDescription
+global.RTCIceCandidate = Mocks.RTCIceCandidate
 
 chai.use(sinonChai)
 
@@ -105,6 +108,17 @@ describe('Client', () => {
 
   })
 
+  describe('openConnection', () => {
+
+    it('calls the openConnection method on the signal', () => {
+      sinon.replace(client.signal, 'openConnection', sinon.spy())
+      client.openConnection()
+
+      expect(client.signal.openConnection).to.have.been.called
+    })
+
+  })
+
   describe('Private methods', () => {
 
     describe('startCall', () => {
@@ -144,17 +158,10 @@ describe('Client', () => {
         expect(client.signal.handlers[message]).to.have.lengthOf(1)
       })
 
-      it('generates and sends the local session descriptor', done => {
-        const revert = Client.__set__('sendLocalDescriptor', function (as, to) {
-          revert()
-
-          expect(as).to.equal('CALLER')
-          expect(to).to.equal(recipient)
-
-          done()
-        })
-
+      it('generates and sends the local session descriptor', () => {
         client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        expect(client.connection.createOffer).to.have.been.called
       })
 
       it('bubbles up the CALL_ACCEPTED event', done => {
@@ -168,6 +175,198 @@ describe('Client', () => {
           expect(handler).to.have.been.called
           done()
         }
+      })
+
+    })
+
+    describe('setupRTCConnection', () => {
+
+      it('instantiates the RTCPeerConnection object', done => {
+        client.on(MessageType.CALL_ACCEPTED, assertions)
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        function assertions() {
+          expect(client.connection).not.to.be.null
+          expect(client.connection.onicecandidate).to.be.a('function')
+          expect(client.connection.ontrack).to.be.a('function')
+          done()
+        }
+      })
+
+      it('doesn\'t adds local stream tracks to the connection if it isn\'t present', done => {
+        client.localStream = null
+
+        client.on(MessageType.CALL_ACCEPTED, assertions)
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        function assertions() {
+          expect(Mocks.RTCPeerConnection.addTrack).to.not.have.been.called
+          done()
+        }
+      })
+
+      it('adds the local stream tracks to the connection if it is present', done => {
+        client.localStream = {
+          getTracks() {
+            return ['track 1', 'track 2']
+          }
+        }
+
+        client.on(MessageType.CALL_ACCEPTED, assertions)
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        function assertions() {
+          expect(Mocks.RTCPeerConnection.addTrack).to.have.been.called
+          expect(Mocks.RTCPeerConnection.addTrack).to.have.been.calledTwice
+          done()
+        }
+      })
+
+      it('adds a listener for the ICE_CANDIDATE_RECEIVED message', () => {
+        const message = MessageType.ICE_CANDIDATE_RECEIVED
+
+        expect(client.signal.handlers[message]).to.be.undefined
+
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+        expect(client.signal.handlers[message]).to.be.an('array')
+        expect(client.signal.handlers[message]).to.have.lengthOf(1)
+      })
+
+      describe('onIceCandidate', () => {
+
+        it('sends an ice candidate to the other peer if it is provided', () => {
+          sinon.replace(client.signal, 'sendICECandidate', sinon.spy())
+
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = { candidate: 'fake ice candidate' }
+          client.connection.onicecandidate(event)
+
+          expect(client.signal.sendICECandidate).to.have.been.called
+        })
+
+        it('doesn\'t send an ice candidate to the other peer if it isn\'t provided', () => {
+          sinon.replace(client.signal, 'sendICECandidate', sinon.spy())
+
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = {}
+          client.connection.onicecandidate(event)
+
+          expect(client.signal.sendICECandidate).to.not.have.been.called
+        })
+
+      })
+
+      describe('onRemoteTrack', () => {
+
+        it('creates a remote MediaStream if not present', () => {
+          client.remoteStream = null
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = {}
+          client.connection.ontrack(event)
+
+          expect(client.remoteStream).not.to.be.null
+        })
+
+        it('doesn\'t replace a MediaStream if it is already present', () => {
+          client.remoteStream = 'fake remote stream'
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = {}
+          client.connection.ontrack(event)
+
+          expect(client.remoteStream).to.equal('fake remote stream')
+        })
+
+        it('adds the track to the remoteStream if present', () => {
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = { track: 'fake track' }
+          client.connection.ontrack(event)
+
+          expect(client.remoteStream.addTrack).to.have.been.called
+        })
+
+        it('emits the REMOTE_STREAM event', done => {
+          const handler = sinon.spy()
+
+          client.on(Client.REMOTE_STREAM, handler)
+          client.on(Client.REMOTE_STREAM, assertions)
+
+          client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+
+          const event = { track: 'fake track' }
+          client.connection.ontrack(event)
+
+          function assertions() {
+            expect(handler).to.have.been.called
+            done()
+          }
+        })
+
+      })
+
+    })
+
+    describe('answerCall', () => {
+
+      it('gets called when CALLER_DESCRIPTOR_RECEIVED event is emitted', () => {
+        const answerCall = sinon.spy(),
+              message = MessageType.CALLER_DESCRIPTOR_RECEIVED,
+              event = {
+                from: caller,
+                sdp: 'fake session descriptor'
+              }
+
+        client.signal.handlers[message][0] = answerCall
+        client.signal.emit(message, event)
+
+        expect(answerCall).to.have.been.called
+        expect(answerCall).to.have.been.calledWith(event)
+      })
+
+      it('sets up the RTCPeerConnection object', done => {
+        const event = {
+          from: caller,
+          sdp: 'fake session descriptor'
+        }
+
+        const revert = Client.__set__('setupRTCConnection', function (callee) {
+          revert()
+
+          expect(callee).to.equal(caller)
+
+          done()
+        })
+
+        client.signal.emit(MessageType.CALLER_DESCRIPTOR_RECEIVED, event)
+      })
+
+      it('generates and sends the local session descriptor', () => {
+        const event = {
+          from: caller,
+          sdp: 'fake session descriptor'
+        }
+
+        client.signal.emit(MessageType.CALLER_DESCRIPTOR_RECEIVED, event)
+
+        expect(client.connection.createAnswer).to.have.been.called
+      })
+
+    })
+
+    describe('onIceCandidateReceived', () => {
+
+      it('adds an RTCIceCandidate to the connection', () => {
+        client.signal.emit(MessageType.CALL_ACCEPTED, recipient)
+        sinon.replace(client.connection, 'addIceCandidate', sinon.spy())
+
+        client.signal.emit(MessageType.ICE_CANDIDATE_RECEIVED, {})
+
+        expect(client.connection.addIceCandidate).to.have.been.called
       })
 
     })
@@ -210,6 +409,5 @@ describe('Client', () => {
     })
 
   })
-
 
 })
