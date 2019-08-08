@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel src/application/pages/*.html",
-    "start:server": "nodemon --watch src/server src/server/index.js",
+    "start:server": "node src/server/index.js",
+    "start:server:dev": "nodemon --watch src/server src/server/index.js",
     "test": "mocha --recursive 'src/**/__tests__/*.js'",
     "test:watch": "npm test -- --watch",
     "test:coverage": "nyc --reporter=text -- npm test",
