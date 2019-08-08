@@ -1,5 +1,35 @@
 # chatroulette-assignment
 
+## Run locally
+
+Make sure that you have `node` installed, the server depends on it.
+
+Run `npm install` to install dev dependencies.
+
+### Run the server
+
+```
+npm run server:start
+```
+
+### Run the application
+
+```
+npm start
+```
+
+After the build, visit http://localhost:1234/index.html
+
+### Check the layout
+
+After starting the application as described before, there are 4 pages to check
+different permutations of horizontal and vertical videos.
+
+- http://localhost:1234/call-horizontal-horizontal.html
+- http://localhost:1234/call-horizontal-vertical.html
+- http://localhost:1234/call-vertical-horizontal.html
+- http://localhost:1234/call-vertical-vertical.html
+
 ## Protocol
 
 ```
