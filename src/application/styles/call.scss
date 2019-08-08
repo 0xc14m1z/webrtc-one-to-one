@@ -12,6 +12,8 @@
     align-items: center;
     height: 100%;
 
+    border-radius: $border-radius;
+
     @media #{$smartphone} {
       background: $grey;
     }
@@ -45,6 +47,10 @@
 
         max-width: 30%;
         max-height: 125px;
+
+        .video-container {
+          height: auto;
+        }
       }
     }
 
