@@ -14,6 +14,8 @@ npm run server:start
 
 ### Run the application
 
+Before running the client, the server needs to be run as described before.
+
 ```
 npm start
 ```
