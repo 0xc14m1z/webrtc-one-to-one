@@ -1,4 +1,4 @@
-# chatroulette-assignment
+# webrtc-one-to-one
 
 ## Run locally
 
